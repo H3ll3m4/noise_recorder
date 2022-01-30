@@ -25,12 +25,10 @@ def aggregate_audio_video(video_thread, filepath):
 	if video_thread.is_alive():
 		print("Video thread is alive : Timeout")
 
-	# Makes sure the threads have finished
 	while threading.active_count() > 1:
 		time.sleep(1)
 
-	#    Merging audio and video signal
-	if abs(recorded_fps - video_recorder.FPS ) >= 0.01:    # If the fps rate was higher/lower than expected, re-encode it to the expected
+	if abs(recorded_fps - video_recorder.FPS ) >= 0.01:   
 		print("Re-encoding")
 		cmd = "ffmpeg -r " + str(recorded_fps) + " -i "+ video_recorder.VIDEO_FILENAME \
 			+ " -pix_fmt yuv420p -r 6 "+ REENCODED_FILENAME
@@ -38,13 +36,11 @@ def aggregate_audio_video(video_thread, filepath):
 		print("Multiplexing")
 		cmd = "ffmpeg -ac 2 -channel_layout stereo -i "+ audio_recorder.AUDIO_FILENAME \
 			+" -i "+ REENCODED_FILENAME+" -pix_fmt yuv420p " + filepath
-		# cmd = "ffmpeg -i "+ REENCODED_FILENAME+" -i "+ audio_recorder.AUDIO_FILENAME +" -c:v copy -c:a aac " + filepath
 		subprocess.call(cmd, shell=True)
 	else:
 		print("Normal recording\nMultiplexing")
 		cmd = "ffmpeg -ac 2 -channel_layout stereo -i "+ audio_recorder.AUDIO_FILENAME \
 			+" -i "+ video_recorder.VIDEO_FILENAME + " -pix_fmt yuv420p " + filepath
-		# cmd = "ffmpeg -i "+ video_recorder.VIDEO_FILENAME + " -i "+ audio_recorder.AUDIO_FILENAME +" -c:v copy -c:a aac " + filepath
 		subprocess.call(cmd, shell=True)
 
 
@@ -66,25 +62,16 @@ def buildfilename():
 	return filename
 
 
-def buildfilepath():
+def buildfilepath(filename):
 	"""Build filepath of the file to store it in the right folder"""
-	filename = buildfilename()
+	if filename is None:
+		filename = buildfilename()
 	filepath = os.path.join(FOLDER+ filename)
 	return filepath
 
 
-def recordaudiovideo(duration):
-	"""Build the video using audio video recorder object"""
-	# filepath = buildfilepath()
-	filepath = buildfilename()
-	audio_video_recorder.start_AVrecording(filepath)
-	time.sleep(float(duration))
-	audio_video_recorder.stop_AVrecording(filepath)
-
-
 def record_video_with_audio(duration):
 	"""Record a video with audio during the time duration"""
-	# filepath = buildfilepath()
 	filepath = buildfilename()
 	print("Recording started")
 	video_thread = video_recorder.VideoThread(duration)
@@ -105,8 +92,9 @@ def record_video_with_audio(duration):
 
 def record_video_with_audio_threads(duration):
 	"""Record a video with audio during the time duration"""
-	# filepath = buildfilepath() #TODO doesn't save in the right folder check user access
-	filepath = buildfilename()
+	filename = buildfilename()
+	# filepath = buildfilepath(filename) #TODO doesn't save in the right folder check user access
+	filepath = filename
 	video_thread = video_recorder.VideoThread(duration)
 	audio_thread = audio_recorder.AudioThread(duration)
 	audio_thread.start()
@@ -120,3 +108,4 @@ def record_video_with_audio_threads(duration):
 	aggregate_audio_video(video_thread,filepath)
 	print("Video is saved as " + filepath)
 	clean_temp_file()
+	return filename

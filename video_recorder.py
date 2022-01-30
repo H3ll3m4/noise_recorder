@@ -1,5 +1,5 @@
 import time
-from datetime import date, datetime
+from datetime import datetime
 import cv2
 import threading
 

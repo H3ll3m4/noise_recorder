@@ -55,19 +55,19 @@ def test_make_video_txt():
 
 def test_noise_trigger():
 	silent_test = noise_detector.noise_trigger()
-	assert silent_test is not True
+	assert silent_test is False
 
 
-def test_audio_loop():
+def test_audio_detector_loop():
 	test = []
 	for x in range(5): 
-		test.append(noise_detector.noise_trigger())
-		if test is True:
-			print("Test " + str(x) + " : noise above threashold detected")
-		else:
+		result = noise_detector.noise_trigger()
+		test.append(result)
+		if test is False:
 			print("Test " + str(x) + " : no noise detected")
+		else:
+			print("Test " + str(x) + " : noise above threashold detected at " + str(result) + " dB")
 	assert len(test) == 5
-
 
 
 def test_audio_sequence():

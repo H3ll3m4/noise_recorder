@@ -10,7 +10,7 @@ import alsa_error_handler
 # underlying level = 40 so trigger should be 50
 TRIGGER_DECIBEL = 60
 
-# Initialisation for PyAudio
+# Initialisation constants for PyAudio
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
@@ -44,7 +44,7 @@ def audio_test_too_noisy(stream):
 		decibel = 20 * math.log10(rms)
 		# print("volume  = " + str(decibel))
 		if decibel > TRIGGER_DECIBEL:
-			return True
+			return decibel
 		time.sleep(0.0001)
 
 
@@ -52,10 +52,10 @@ def noise_trigger():
 	"""Listen to the microphone and trigger if there is noise"""
 	p_audio, stream = audio_init()
 	test = audio_test_too_noisy(stream)
-	if test is True:
-		print("Noise is too loud")
-	else: 
+	if test is None:
 		test = False
+	else: 
+		print("Noise is too loud")
 	audio_terminate(p_audio, stream)
 	return test
 

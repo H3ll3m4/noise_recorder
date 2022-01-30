@@ -1,7 +1,7 @@
 import math
 import time, audioop
 import pyaudio
-from datetime import date, datetime
+from datetime import datetime
 import wave
 import threading
 import pyaudio
@@ -10,7 +10,7 @@ import alsa_error_handler
 
 AUDIO_FILENAME = "temp_audio.wav"
 
-# Initialisation for PyAudio
+# Initialisation constants for PyAudio
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 2

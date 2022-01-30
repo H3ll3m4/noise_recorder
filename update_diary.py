@@ -71,7 +71,10 @@ def main():
 	print('Number of arguments: ', len(sys.argv))
 	print('The list of arguments: ', str(sys.argv))
 	if len(sys.argv) < 2:
-		path = "~/Downloads/"
+		# path = "~/Downloads/"
+		# path = "../../Downloads"
+		# path = "../../Downloads/"
+		path = "."
 	else : 
 		path = sys.argv[1]
 	print("Path to go through:", path)
